@@ -1,0 +1,55 @@
+# Baby AI 1.56 — o verificador de provas em Lean (posto aqui pela app; não é preciso mexer)
+name: Verificar provas da Baby
+on:
+  push:
+    paths: ['fila/**', '.github/workflows/verificar.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: verificar
+  cancel-in-progress: false
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      FC_COMMIT: 04937a4cccadd0a205abdf2c706938c6c95e4177
+      BABY_FC: ${{ github.workspace }}/fc
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lean (elan)
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -o /tmp/elan-init.sh
+          sh /tmp/elan-init.sh -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: A lista dos problemas de Erdős (Google DeepMind)
+        run: |
+          git clone -q https://github.com/google-deepmind/formal-conjectures fc
+          cd fc && git checkout -q "$FC_COMMIT"
+      - name: As ferramentas da lista já compiladas (guardadas da 1.ª vez)
+        uses: actions/cache@v4
+        with:
+          path: fc/.lake/build
+          key: fc-build-${{ env.FC_COMMIT }}
+      - name: A Mathlib já compilada
+        working-directory: fc
+        run: lake exe cache get
+      - name: Compilar as ferramentas da lista (só demora da 1.ª vez)
+        working-directory: fc
+        run: lake build FormalConjecturesUtil
+      - name: O catálogo dos teoremas por provar
+        run: |
+          if [ ! -f catalogo/indice.json ]; then python3 verificador/verificador_lean.py --catalogo catalogo; fi
+      - name: Conferir a fila
+        run: |
+          mkdir -p fila
+          python3 verificador/verificador_lean.py --lote fila resultados provadas
+      - name: Guardar os resultados
+        run: |
+          git config user.name "baby-verificador"
+          git config user.email "baby-verificador@users.noreply.github.com"
+          git add -A catalogo resultados fila provadas 2>/dev/null || true
+          git commit -q -m "Verificação $(date -u +%Y-%m-%dT%H:%MZ)" || exit 0
+          for i in 1 2 3; do git pull -q --rebase && git push -q && exit 0; sleep 5; done
+          exit 1

@@ -1,1 +1,0 @@
-{"id": "1177:erdos_1177.parts.i", "prova": "  intro W HW G h\n  obtain ⟨V, hVEq, X, hChr, hApp, hBound⟩ := h\n  refine ⟨V, ?_, X, hChr, hApp, ?_⟩\n  · exact Subtype.decEq\n  · exact hBound", "auxiliares": ""}

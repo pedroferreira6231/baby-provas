@@ -1,0 +1,1 @@
+{"id": "939:erdos_939.variants.eight", "prova": "  use {2^10 * 3^8 * 5^8, 2^14 * 23^8, 11^8 * 13^8, 17^8 * 19^8}\n  simp [Erdos939Sums, Nat.Full]\n  constructor\n  · unfold Finset.Coprime\n    aesop\n  · norm_num [Nat.Full, Nat.primeFactors, Nat.primeFactorsList]", "auxiliares": ""}

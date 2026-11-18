@@ -35,7 +35,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-VERSAO = "1.59"
+VERSAO = "1.60"
 RAIZ = Path(os.environ.get("BABY_FC", str(Path.home() / "fc")))
 PORTA = int(os.environ.get("BABY_LEAN_PORTA", "8090"))
 TEMPO = int(os.environ.get("BABY_LEAN_TEMPO", "900"))         # segundos para uma verificação
@@ -431,6 +431,7 @@ def varrer(v, pasta, provadas, maximo=150, segundos=1500):
         est = {}
     feitos = set(est.get("feitos") or [])
     aceites = list(est.get("aceites") or [])
+    erros = list(est.get("erros") or [])         # 1.60: o que o Lean disse (para o Claude ver se a receita está bem)
     t0 = time.time()
     fila = sorted((a for a in v.alvos.values() if a["id"] not in feitos),
                   key=lambda a: (ORDEM_VARRER.get(a["categoria"], 9), len(a["numero"]), a["numero"], a["nome"]))
@@ -441,6 +442,8 @@ def varrer(v, pasta, provadas, maximo=150, segundos=1500):
         r = v.verificar(a["id"], TATICA_VARRER)
         feitos.add(a["id"])
         n += 1
+        if not r.get("provada"):
+            erros = (erros + [{"id": a["id"], "erro": str(r.get("erro") or r.get("porque") or "?")[:240]}])[-60:]
         if r.get("provada"):
             aceites.append({"id": a["id"], "categoria": a["categoria"], "quando": time.strftime("%Y-%m-%d %H:%M UTC",
                                                                                               time.gmtime()),
@@ -451,7 +454,7 @@ def varrer(v, pasta, provadas, maximo=150, segundos=1500):
                     (provadas / g.name).write_bytes(g.read_bytes())
             print(f"VARRIMENTO: {a['id']} PROVADO pelas táticas automáticas", flush=True)
     est = {"versao": VERSAO, "tatica": TATICA_VARRER, "total": len(v.alvos), "feitos": sorted(feitos),
-           "aceites": aceites, "atualizado": time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime())}
+           "aceites": aceites, "erros": erros, "atualizado": time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime())}
     f.write_text(json.dumps(est, ensure_ascii=False), encoding="utf-8")
     return n, len(aceites)
 
@@ -460,7 +463,8 @@ if __name__ == "__main__":
     import sys
     if len(sys.argv) >= 4 and sys.argv[1] == "--varrer":
         v = Verificador()
-        print("varridos, aceites:", varrer(v, sys.argv[2], sys.argv[3]), flush=True)
+        segundos = int(sys.argv[4]) if len(sys.argv) >= 5 else 1500      # 1.60: nas corridas das provas, pouco
+        print("varridos, aceites:", varrer(v, sys.argv[2], sys.argv[3], segundos=segundos), flush=True)
         sys.exit(0)
     if len(sys.argv) >= 3 and sys.argv[1] == "--catalogo":
         v = Verificador()

@@ -1,1 +1,0 @@
-{"id": "396:erdos_396", "prova": "exact absurd h (by\n  let n := 0\n  refine ⟨n, ?_⟩\n  rw [Nat.descFactorial_of_lt, Nat.centralBinom]\n  simp)", "auxiliares": ""}

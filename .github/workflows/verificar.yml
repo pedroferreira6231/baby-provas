@@ -1,9 +1,11 @@
-# Baby AI 1.57 — o verificador de provas em Lean (posto aqui pela app; não é preciso mexer)
+# Baby AI 1.59 — o verificador de provas em Lean (posto aqui pela app; não é preciso mexer)
 name: Verificar provas da Baby
 on:
   push:
     paths: ['fila/**', '.github/workflows/verificar.yml']
   workflow_dispatch:
+  schedule:
+    - cron: '17 */3 * * *'     # 1.58: de 3 em 3 horas, o varrimento (táticas automáticas, sem IA)
 permissions:
   contents: write
 concurrency:
@@ -45,13 +47,17 @@ jobs:
         run: |
           mkdir -p fila
           python3 verificador/verificador_lean.py --lote fila resultados provadas
+      - name: O varrimento (o Lean tenta sozinho as táticas automáticas, aos bocados)
+        if: github.event_name != 'push'
+        continue-on-error: true
+        run: python3 verificador/verificador_lean.py --varrer varrimento provadas
       - name: Guardar os resultados
         run: |
           git config user.name "baby-verificador"
           git config user.email "baby-verificador@users.noreply.github.com"
           # 17/11 (1.57): um "git add" com uma pasta que não existe (na 1.ª corrida, resultados/ e provadas/) não
           # junta NADA — a 1.ª corrida acabou "success" sem guardar o catálogo. Agora junta pasta a pasta.
-          for d in catalogo resultados fila provadas; do
+          for d in catalogo resultados fila provadas varrimento; do
             if [ -e "$d" ]; then git add -A -- "$d"; fi
           done
           git commit -q -m "Verificação $(date -u +%Y-%m-%dT%H:%MZ)" || exit 0

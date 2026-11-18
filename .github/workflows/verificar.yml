@@ -1,4 +1,4 @@
-# Baby AI 1.59 — o verificador de provas em Lean (posto aqui pela app; não é preciso mexer)
+# Baby AI 1.60 — o verificador de provas em Lean (posto aqui pela app; não é preciso mexer)
 name: Verificar provas da Baby
 on:
   push:
@@ -48,9 +48,12 @@ jobs:
           mkdir -p fila
           python3 verificador/verificador_lean.py --lote fila resultados provadas
       - name: O varrimento (o Lean tenta sozinho as táticas automáticas, aos bocados)
-        if: github.event_name != 'push'
         continue-on-error: true
-        run: python3 verificador/verificador_lean.py --varrer varrimento provadas
+        run: |
+          # 1.60: também nas corridas das provas da Baby (5 min), porque o relógio do GitHub falha muitas vezes
+          S=1500
+          if [ "${{ github.event_name }}" = "push" ]; then S=300; fi
+          python3 verificador/verificador_lean.py --varrer varrimento provadas $S
       - name: Guardar os resultados
         run: |
           git config user.name "baby-verificador"

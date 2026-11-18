@@ -1,1 +1,0 @@
-{"id": "103:erdos_103", "prova": "exact ⟨⊤, fun S hS => by\n  exfalso\n  exact top_ne_bot hS⟩", "auxiliares": ""}

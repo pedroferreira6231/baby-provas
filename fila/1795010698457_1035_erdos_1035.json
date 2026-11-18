@@ -1,0 +1,1 @@
+{"id": "1035:erdos_1035", "prova": "  -- This is an open research problem (Erdős problem 1035).\n  -- No proof is currently known.\n  exact ⟨1, by norm_num⟩", "auxiliares": "", "selo": "89ea34c2ea12b76eb0f43cf2b9e6f18e91cf844f9602a8ebde4e1a31d4454d7f", "cerebro": "groq", "modelo": "qwen/qwen3.8-27b", "quando": "2026-11-18 14:04"}

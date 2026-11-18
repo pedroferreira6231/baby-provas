@@ -1,1 +1,0 @@
-{"id": "103:erdos_103", "prova": "exact tendsto_iff_forall_ne_top.mpr (by\n  intro x hx\n  exfalso\n  exact hx rfl)", "auxiliares": ""}

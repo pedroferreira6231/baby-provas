@@ -35,7 +35,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-VERSAO = "1.56"
+VERSAO = "1.59"
 RAIZ = Path(os.environ.get("BABY_FC", str(Path.home() / "fc")))
 PORTA = int(os.environ.get("BABY_LEAN_PORTA", "8090"))
 TEMPO = int(os.environ.get("BABY_LEAN_TEMPO", "900"))         # segundos para uma verificação
@@ -169,6 +169,11 @@ def montar(texto_original, alvo, prova, auxiliares=""):
     return novo
 
 
+def importacoes_da_lista(texto):
+    """Os outros ficheiros da lista que um ficheiro importa (ex.: FormalConjectures.ErdosProblems.«211»)."""
+    return re.findall(r"^(?:public\s+)?import\s+(FormalConjectures\.\S+)", texto, re.M)
+
+
 def sha(texto):
     return hashlib.sha256(texto.encode("utf-8")).hexdigest()
 
@@ -209,10 +214,12 @@ def veredicto(erros, axiomas):
 
 # ------------------------------------------------------------------ o servidor
 class Verificador:
-    def __init__(self, raiz=RAIZ, correr=None, tempo=TEMPO):
+    def __init__(self, raiz=RAIZ, correr=None, tempo=TEMPO, construir=None):
         self.raiz = Path(raiz)
         self.tempo = tempo
         self.correr = correr or self._correr_lean
+        self.construir = construir or self._construir_lean      # 1.59: os outros ficheiros da lista que este importa
+        self.construidos = set()
         self.trinco = threading.Lock()
         self.ocupado = False
         self.alvos = catalogo(self.raiz)
@@ -241,6 +248,15 @@ class Verificador:
                            timeout=self.tempo)
         return r.returncode, (r.stdout or "") + (r.stderr or "")
 
+    def _construir_lean(self, modulo):
+        """1.59: compila um ficheiro da lista que o problema importa (ex.: FormalConjectures.Wikipedia.Schinzel)."""
+        try:
+            r = subprocess.run(["lake", "build", modulo], cwd=self.raiz, capture_output=True, text=True,
+                               timeout=max(self.tempo, 1800))
+            return r.returncode == 0, ((r.stdout or "") + (r.stderr or ""))[-1500:]
+        except (OSError, subprocess.SubprocessError) as ex:
+            return False, str(ex)
+
     def estado(self):
         return {"ok": True, "versao": VERSAO, "lean": self.lean, "commit": self.commit, "alvos": len(self.alvos),
                 "ocupado": self.ocupado, **self.contas, "ultima": self.ultima}
@@ -268,6 +284,14 @@ class Verificador:
             nome_f = f"T{int(t0)}_{re.sub(r'[^A-Za-z0-9]', '_', ident)}.lean"
             ficheiro = pasta / nome_f
             ficheiro.write_text(texto, encoding="utf-8")
+            # 1.59 (relatório n.º 15): 29 ficheiros da lista importam outros ficheiros da lista (não só o
+            # FormalConjecturesUtil) — o Lean dizia "unknown module prefix 'FormalConjectures'" e a prova falhava sem
+            # ser culpa da Baby. Agora compilam-se primeiro esses ficheiros (uma vez por corrida).
+            for modulo in importacoes_da_lista(original):
+                if modulo not in self.construidos:
+                    feito, _msg = self.construir(modulo)
+                    if feito:
+                        self.construidos.add(modulo)
             try:
                 codigo, saida = self.correr(ficheiro.relative_to(self.raiz))
             except subprocess.TimeoutExpired:
@@ -385,8 +409,59 @@ def lote(v, fila, resultados, provadas):
     return n
 
 
+# ------------------------------------------------------------------ 1.58: o varrimento (a Baby sem cérebros de IA)
+# Pedro (17/11): "tens que potenciar o Baby". Antes de pedir provas aos cérebros, o próprio Lean tenta as táticas
+# automáticas em todos os teoremas da lista, aos bocados, de 3 em 3 horas, no GitHub. Não há IA nenhuma aqui: se uma
+# delas fechar um teorema, a prova é do Lean e da Baby. Nos problemas em aberto não se espera nada; nos exercícios e
+# em alguns resultados conhecidos, talvez.
+TATICA_VARRER = ("set_option maxHeartbeats 200000 in\n"
+                 "first\n  | decide\n  | norm_num\n  | simp\n  | omega\n  | positivity\n  | linarith\n"
+                 "  | nlinarith\n  | aesop\n  | exact?")
+ORDEM_VARRER = {"test": 0, "textbook": 1, "research solved": 2, "research open": 3}
+
+
+def varrer(v, pasta, provadas, maximo=150, segundos=1500):
+    """Tenta a TATICA_VARRER nos teoremas ainda não varridos (exercícios primeiro). Guarda em PASTA/estado.json."""
+    pasta, provadas = Path(pasta), Path(provadas)
+    pasta.mkdir(parents=True, exist_ok=True)
+    f = pasta / "estado.json"
+    try:
+        est = json.loads(f.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        est = {}
+    feitos = set(est.get("feitos") or [])
+    aceites = list(est.get("aceites") or [])
+    t0 = time.time()
+    fila = sorted((a for a in v.alvos.values() if a["id"] not in feitos),
+                  key=lambda a: (ORDEM_VARRER.get(a["categoria"], 9), len(a["numero"]), a["numero"], a["nome"]))
+    n = 0
+    for a in fila[:maximo]:
+        if time.time() - t0 > segundos:
+            break
+        r = v.verificar(a["id"], TATICA_VARRER)
+        feitos.add(a["id"])
+        n += 1
+        if r.get("provada"):
+            aceites.append({"id": a["id"], "categoria": a["categoria"], "quando": time.strftime("%Y-%m-%d %H:%M UTC",
+                                                                                              time.gmtime()),
+                            "axiomas": r.get("axiomas"), "selos": r.get("selos")})
+            provadas.mkdir(parents=True, exist_ok=True)
+            for g in sorted((v.raiz / PASTA / "provadas").glob("*")):
+                if not (provadas / g.name).exists():
+                    (provadas / g.name).write_bytes(g.read_bytes())
+            print(f"VARRIMENTO: {a['id']} PROVADO pelas táticas automáticas", flush=True)
+    est = {"versao": VERSAO, "tatica": TATICA_VARRER, "total": len(v.alvos), "feitos": sorted(feitos),
+           "aceites": aceites, "atualizado": time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime())}
+    f.write_text(json.dumps(est, ensure_ascii=False), encoding="utf-8")
+    return n, len(aceites)
+
+
 if __name__ == "__main__":
     import sys
+    if len(sys.argv) >= 4 and sys.argv[1] == "--varrer":
+        v = Verificador()
+        print("varridos, aceites:", varrer(v, sys.argv[2], sys.argv[3]), flush=True)
+        sys.exit(0)
     if len(sys.argv) >= 3 and sys.argv[1] == "--catalogo":
         v = Verificador()
         print("catálogo:", escrever_catalogo(v.raiz, sys.argv[2], v.commit), "teoremas", flush=True)

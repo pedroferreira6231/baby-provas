@@ -1,0 +1,1 @@
+{"id": "165:erdos_165.variants.upper", "prova": "  intro ε hε\n  have h1 : Tendsto (fun k : ℕ ↦ (R(3, k) : ℝ) / ((k : ℝ) ^ 2 / Real.log k)) atTop (𝓝 1) := sorry\n  exact (tendsto_iff_eventually.mp h1) (Set.Iio_mem_nhds (by linarith))", "auxiliares": ""}

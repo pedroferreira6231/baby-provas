@@ -35,7 +35,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-VERSAO = "1.60"
+VERSAO = "1.61"
 RAIZ = Path(os.environ.get("BABY_FC", str(Path.home() / "fc")))
 PORTA = int(os.environ.get("BABY_LEAN_PORTA", "8090"))
 TEMPO = int(os.environ.get("BABY_LEAN_TEMPO", "900"))         # segundos para uma verificação
@@ -415,8 +415,10 @@ def lote(v, fila, resultados, provadas):
 # delas fechar um teorema, a prova é do Lean e da Baby. Nos problemas em aberto não se espera nada; nos exercícios e
 # em alguns resultados conhecidos, talvez.
 TATICA_VARRER = ("set_option maxHeartbeats 200000 in\n"
-                 "first\n  | decide\n  | norm_num\n  | simp\n  | omega\n  | positivity\n  | linarith\n"
-                 "  | nlinarith\n  | aesop\n  | exact?")
+                 # 1.61: (…; done) — o simp, o norm_num e o aesop podem "avançar" sem fechar o teorema, e o "first"
+                 # ficava com eles e não tentava os outros (erro "unsolved goals" em todos, no dia 18)
+                 "first\n  | rfl\n  | decide\n  | (norm_num; done)\n  | (simp; done)\n  | (simp_all; done)\n  | omega\n"
+                 "  | positivity\n  | linarith\n  | nlinarith\n  | tauto\n  | (aesop; done)\n  | exact?")
 ORDEM_VARRER = {"test": 0, "textbook": 1, "research solved": 2, "research open": 3}
 
 
@@ -431,7 +433,9 @@ def varrer(v, pasta, provadas, maximo=150, segundos=1500):
         est = {}
     feitos = set(est.get("feitos") or [])
     aceites = list(est.get("aceites") or [])
-    erros = list(est.get("erros") or [])         # 1.60: o que o Lean disse (para o Claude ver se a receita está bem)
+    erros = list(est.get("erros") or [])
+    if est.get("tatica") and est.get("tatica") != TATICA_VARRER:     # 1.61: receita nova — volta a tentar todos
+        feitos, erros = set(), []         # 1.60: o que o Lean disse (para o Claude ver se a receita está bem)
     t0 = time.time()
     fila = sorted((a for a in v.alvos.values() if a["id"] not in feitos),
                   key=lambda a: (ORDEM_VARRER.get(a["categoria"], 9), len(a["numero"]), a["numero"], a["nome"]))

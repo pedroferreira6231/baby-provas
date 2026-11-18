@@ -1,4 +1,4 @@
-# Baby AI 1.60 — o verificador de provas em Lean (posto aqui pela app; não é preciso mexer)
+# Baby AI 1.61 — o verificador de provas em Lean (posto aqui pela app; não é preciso mexer)
 name: Verificar provas da Baby
 on:
   push:

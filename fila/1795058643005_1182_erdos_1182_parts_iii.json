@@ -1,1 +1,0 @@
-{"id": "1182:erdos_1182.parts.iii", "prova": "theorem filter_tendsto_atBot_iff {f : α -> β} {l : α₁} : Tendsto f l atBot ↔ ∀ b, {x | f x ≤ b} ∈ l? ", "auxiliares": "", "selo": "9a2387ac0125be0c00d375d023a36f0ef339cf0a6783065770e34f69bc45fb9e", "cerebro": "groq", "modelo": "qwen/qwen3.8-27b", "quando": "2026-11-18 19:03"}

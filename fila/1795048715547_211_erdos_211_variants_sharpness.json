@@ -1,1 +1,0 @@
-{"id": "211:erdos_211.variants.sharpness", "prova": "\n  exact ⟨fun i => i * i, by intros i; rfl⟩", "auxiliares": "", "selo": "800692da6d0729dacd9ba1b182717a3f3125110c53776eef29809477524245db", "cerebro": "groq", "modelo": "qwen/qwen3.8-27b", "quando": "2026-11-18 16:05"}

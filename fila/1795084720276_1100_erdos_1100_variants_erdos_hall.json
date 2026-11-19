@@ -1,1 +1,0 @@
-{"id": "1100:erdos_1100.variants.erdos_hall", "prova": "intro ε hε\nhave h : ∀ᶠ x : ℝ in atTop, ∃ n : ℕ, (n : ℝ) < x ∧ Real.exp (Real.log (Real.log x) ^ (2 - ε)) < (tauPerp n : ℝ) := by\n  trivial\nexact h", "auxiliares": "", "selo": "64c6eb0ff185b03b19e852199a763ea5fa224275786e963ce6c6953d30a62689", "cerebro": "groq", "modelo": "qwen/qwen3.8-27b", "quando": "2026-11-19 10:38"}

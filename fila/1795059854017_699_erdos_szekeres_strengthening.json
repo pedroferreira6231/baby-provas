@@ -1,0 +1,1 @@
+{"id": "699:erdos_szekeres_strengthening", "prova": "exact ⟨∅, fun n i j hi hij hjh ↦\n  ⟨⟨1, by decide⟩, by linarith, by simpa using (Int.ModEq.dvd_iff.1 (by decide : (1 : ℤ) ≡ 1 [MOD 1]))⟩⟩", "auxiliares": "", "selo": "3092b123af89aa4981563ad26b14496f857d9eab3399c113c30e160186598e61", "cerebro": "groq", "modelo": "qwen/qwen3.8-27b", "quando": "2026-11-18 19:23"}

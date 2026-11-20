@@ -1,0 +1,1 @@
+{"id": "413:erdos_413.variants.bigOmega_largest_barrier_lt_100k", "prova": "  refine ⟨erdos_413.bigOmega_99840_mem, ?_⟩\n  intro n hn\n  exact hn.1", "auxiliares": "", "selo": "b5e9f328393bcc0dab87499ea5a2bd258528fca658b216f54e868faeb5fd707c", "cerebro": "groq", "modelo": "qwen/qwen3.8-27b", "quando": "2026-11-19 15:23"}

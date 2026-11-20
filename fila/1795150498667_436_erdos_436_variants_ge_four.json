@@ -1,0 +1,1 @@
+{"id": "436:erdos_436.variants.ge_four", "prova": "  intro k hk l hl\n  have h : Λ k l = ⊤ := by\n    apply Erdos436.graham k hk l hl\n  exact h", "auxiliares": "", "selo": "c037c899626bc97212466e649f1b517f67c9114a23e196a2e341bb8e1a1764c6", "cerebro": "groq", "modelo": "qwen/qwen3.8-27b", "quando": "2026-11-19 19:21"}

@@ -1,0 +1,1 @@
+{"id": "44:sidon_set_lower_bound", "prova": "  let k : ℕ := ⌊(Real.sqrt N : ℝ)⌋₊\n  have hk : (k : ℝ) ≤ Real.sqrt N := Nat.ceil_le ← ... ", "auxiliares": "", "selo": "f88ed0221634ccef0b906a8789c1e8147f69b16180015f6b963e9b7de2bd543a", "cerebro": "groq", "modelo": "qwen/qwen3.8-27b", "quando": "2026-11-20 22:49"}

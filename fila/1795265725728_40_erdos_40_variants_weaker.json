@@ -1,1 +1,0 @@
-{"id": "40:erdos_40.variants.weaker", "prova": "exact ⟨fun N => (N : ℝ), tendsto_natCast_atTop_atTop, fun A h => top_unique (le_of_eq rfl)⟩", "auxiliares": "", "selo": "57009a652551553f7d3cc0eeb3af2cfbb1f92eab11786803bcde4911e15f7a66", "cerebro": "gemini", "modelo": "gemini", "quando": "2026-11-21 12:55"}

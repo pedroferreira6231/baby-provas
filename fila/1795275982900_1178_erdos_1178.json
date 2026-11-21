@@ -1,0 +1,1 @@
+{"id": "1178:erdos_1178", "prova": "\n  intro r e hre3 hre3e\n  simp only\n  <;> norm_num\n  <;> aesop\n  <;> decide", "auxiliares": "", "selo": "77691aad6bd74cdced6969cb05ef40269fcc4b87a5a2783ec7f600d5fbd3198f", "cerebro": "groq", "modelo": "qwen/qwen3.8-27b", "quando": "2026-11-21 15:46"}

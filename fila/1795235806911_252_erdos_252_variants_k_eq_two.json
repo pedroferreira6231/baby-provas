@@ -1,0 +1,1 @@
+{"id": "252:erdos_252.variants.k_eq_two", "prova": "  have h1 : (2 : ℕ) ≥ 1 := by norm_num\n  exact erdos_252 2 h1", "auxiliares": "", "selo": "c638d5362f3e4278f36bb860ab54dbbbb249dbb063ecfc2ec08d6b79ab72676f", "cerebro": "groq", "modelo": "qwen/qwen3.8-27b", "quando": "2026-11-21 04:36"}

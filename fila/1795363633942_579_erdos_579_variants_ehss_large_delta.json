@@ -1,0 +1,1 @@
+{"id": "579:erdos_579.variants.ehss_large_delta", "prova": "use 1\nrefine ⟨zero_lt_one, ?_⟩\nfilter_upwards\nintro n G hFree hEdges\nhave hnn : 0 ≤ (n : ℝ) := Nat.cast_nonnegative n\nlinarith", "auxiliares": "", "selo": "35406b45165c7cd542e477436dcdd4491eeb0a7e9ff185c154e144e0d6544748", "cerebro": "gemini", "modelo": "gemini", "quando": "2026-11-22 16:07"}

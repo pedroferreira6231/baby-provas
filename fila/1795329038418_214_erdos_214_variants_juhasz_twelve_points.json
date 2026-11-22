@@ -1,0 +1,1 @@
+{"id": "214:erdos_214.variants.juhasz_twelve_points", "prova": "intro h\nhave h11 : HasRedCopies 11 := by\n  simpa [HasRedCopies] using h\n  exact False", "auxiliares": "", "selo": "499e9a23b390590364db330fd0958e163cf7bdf18d33aeb75949510f4ea40f3d", "cerebro": "groq", "modelo": "qwen/qwen3.8-27b", "quando": "2026-11-22 06:30"}

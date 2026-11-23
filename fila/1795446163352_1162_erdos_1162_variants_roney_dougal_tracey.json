@@ -1,1 +1,0 @@
-{"id": "1162:erdos_1162.variants.roney_dougal_tracey", "prova": "have : ∀ n : ℕ, 0 < (f n : ℝ) := fun n => Nat.cast_pos.mpr ‹_›", "auxiliares": "", "selo": "1662233801bd9eb2778fe69e561fef2f336d989d50bd5fca2b6e46f5925b1d1f", "cerebro": "groq", "modelo": "qwen/qwen3.8-27b", "quando": "2026-11-23 15:02"}

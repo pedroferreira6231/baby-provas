@@ -1,1 +1,0 @@
-{"id": "6:erdos_6.variants.increasing", "prova": "  simp [Nat.succ_eq_add_one]", "auxiliares": "", "selo": "d63b835706b9c6339f8c262df63071a233a4e8689c4420741a87e23952d1c170", "cerebro": "groq", "modelo": "qwen/qwen3.8-27b", "quando": "2026-11-23 01:13"}

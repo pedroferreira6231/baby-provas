@@ -1,1 +1,0 @@
-{"id": "541:erdos_541.variants.large_primes", "prova": "intro p' hp'\nintro p hprime a h\nexact erdos_541.variants.general_moduli p a h", "auxiliares": "", "selo": "8694fd3c01a955d89f63e7028ccc449ba8a614791d6d8f73611945a77ffa1b1b", "cerebro": "groq", "modelo": "qwen/qwen3.8-27b", "quando": "2026-11-23 22:39"}

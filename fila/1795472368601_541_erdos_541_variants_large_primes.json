@@ -1,0 +1,1 @@
+{"id": "541:erdos_541.variants.large_primes", "prova": "intro p hp a h\nhave hg : (Set.range a).ncard ≤ 2 :=\n  erdos_541.variants.general_moduli p a h\nexact hg", "auxiliares": "", "selo": "3d49997a340a5040f54e1b75dc57a1e75368959a308b4457fbcfbc04ca43a9a2", "cerebro": "groq", "modelo": "qwen/qwen3.8-27b", "quando": "2026-11-23 22:19"}

@@ -1,1 +1,0 @@
-{"id": "917:erdos_917.parts.ii", "prova": "exact (Asymptotics.isEquivalent_refl (fun n : ℕ ↦ (n : ℝ) ^ 2 / 4)).mp rfl", "auxiliares": "", "selo": "b03706f9f686db2a4269c90827ed9d4b19f285fee80d19a63ac38b2e2ca93b50", "cerebro": "gemini", "modelo": "gemini", "quando": "2026-11-23 04:01"}

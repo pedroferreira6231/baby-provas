@@ -1,0 +1,1 @@
+{"id": "1189:erdos_1189.parts.iv", "prova": "by\n  by_contra h\n  have h2 : {n : ℕ | IsIrreducibleCoveringSet (n.divisors.filter (1 < ·))}.Infinite :=\n    Set.infinite_univ.mono (fun _ _ => trivial)\n  exact h h2", "auxiliares": "", "selo": "511d6958188125b45bb0930c2a5293cd55b62d56b16c4cb0a7bd0d48c093bf19", "cerebro": "gemini", "modelo": "gemini", "quando": "2026-11-24 04:14"}

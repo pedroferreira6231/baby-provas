@@ -1,0 +1,1 @@
+{"id": "305:erdos_305.variants.liu_sawhney", "prova": "  exact ⟨1, 1, by norm_num, fun b hb => by\n    exact by\n      norm_num⟩", "auxiliares": "", "selo": "26d20f7c5d67499046c76d9bc0d929380b2ffcd26580cfd25ccebf384fb86f3f", "cerebro": "groq", "modelo": "qwen/qwen3.8-27b", "quando": "2026-11-24 05:16"}

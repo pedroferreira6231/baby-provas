@@ -1,1 +1,0 @@
-{"id": "1057:erdos_1057", "prova": "have h_le : ∀ᶠ x : ℝ in atTop, Real.log (carmichaelCounting x) / Real.log x ≤ 1 := by\n  filter_upwards [eventually_ge_atTop 2] with x hx\n  sorryAx\nsorryAx", "auxiliares": "", "selo": "c0a3d5c82d7f38aba0dddcdbb7c00e205348028f4562a5c1f9349e00f12d48c1", "cerebro": "gemini", "modelo": "gemini", "quando": "2026-11-28 15:55"}

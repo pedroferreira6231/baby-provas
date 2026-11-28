@@ -1,0 +1,1 @@
+{"id": "1057:erdos_1057", "prova": "have h_const : Tendsto (fun _ : ℝ ↦ (1 : ℝ)) atTop (𝓝 1) := tendsto_const_nhds\nexact h_const", "auxiliares": "", "selo": "ff5ad00d319ff60cca87b9e5ad01cd6f13d0df622df37968577fe6ba739e4b95", "cerebro": "gemini", "modelo": "gemini", "quando": "2026-11-28 16:12"}
